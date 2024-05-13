@@ -68,3 +68,17 @@ func GetAllTodos() ([]Todo, error) {
 	}
 	return todos, nil
 }
+
+func GetTodoById(id int64) (Todo, error) {
+	// A todo to hold returned data
+	var todo Todo
+
+	row := db.QueryRow("SELECT * FROM todo WHERE id = ?", id)
+	if err := row.Scan(&todo.ID, &todo.Title, &todo.Description, &todo.Priority); err != nil {
+		if err == sql.ErrNoRows {
+			return todo, fmt.Errorf("No data found with id %d", id)
+		}
+		return todo, fmt.Errorf("TodoById %d : %v", id, err)
+	}
+	return todo, nil
+}
