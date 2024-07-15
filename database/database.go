@@ -79,3 +79,27 @@ func ReadTodo(id int64) (Todo, error) {
 	}
 	return todo, nil
 }
+
+func UpdateTodo(id int64, newTodo Todo) (Todo, error) {
+	existingTodo, err := ReadTodo(id)
+	if err != nil {
+		return existingTodo, err
+	}
+	if newTodo.Title != "" {
+		existingTodo.Title = newTodo.Title
+	}
+	if newTodo.Description != "" {
+		existingTodo.Description = newTodo.Description
+	}
+	if newTodo.Priority != 0 {
+		existingTodo.Priority = newTodo.Priority
+	}
+
+	// Update the to do in the database
+	_, err = db.Exec("UPDATE todo SET title = ?, description = ?, priority = ? WHERE id = ?", existingTodo.Title, existingTodo.Description, existingTodo.Priority, existingTodo.ID)
+	if err != nil {
+		return existingTodo, fmt.Errorf("UpdateTodo: %v", err)
+	}
+
+	return existingTodo, nil
+}
