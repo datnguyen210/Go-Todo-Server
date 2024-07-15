@@ -28,7 +28,9 @@ func main() {
 
 	router.GET("/todos", indexTodos)
 	router.GET("/todos/:id", readTodo)
+	router.POST("todos", createTodo)
 	router.PUT("/todos/:id", updateTodo)
+	router.DELETE("/todos/:id", deleteTodo)
 
 	// Start the server on localhost:8080
 	err := router.Run("localhost:8080")
@@ -79,4 +81,34 @@ func updateTodo(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, updatedTodo)
+}
+
+func createTodo(c *gin.Context) {
+	var newTodo database.Todo
+	if err := c.BindJSON(&newTodo); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	createdTodo, error := database.CreateTodo(newTodo)
+	if error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": error.Error()})
+	}
+	c.JSON(http.StatusCreated, createdTodo)
+}
+
+func deleteTodo(c *gin.Context) {
+	idStr := c.Param("id")
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid todo ID"})
+		return
+	}
+
+	err = database.DeleteTodo(id)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Todo deleted successfully"})
 }

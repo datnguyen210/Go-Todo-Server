@@ -103,3 +103,27 @@ func UpdateTodo(id int64, newTodo Todo) (Todo, error) {
 
 	return existingTodo, nil
 }
+
+func CreateTodo(todo Todo) (Todo, error) {
+	createdTodo, err := db.Exec("INSERT INTO todo (title, description, priority) VALUES (?, ?, ?)", todo.Title, todo.Description, todo.Priority)
+	if err != nil {
+		return Todo{}, fmt.Errorf("CreateTodo: %v", err)
+	}
+
+	id, err := createdTodo.LastInsertId()
+	if err != nil {
+		return Todo{}, fmt.Errorf("CreateTodo: %v", err)
+	}
+
+	todo.ID = id
+	return todo, nil
+}
+
+func DeleteTodo(id int64) error {
+	_, err := db.Exec("DELETE FROM todo WHERE id = ?", id)
+	if err != nil {
+		return fmt.Errorf("DeleteTodo: %v", err)
+	}
+
+	return nil
+}
