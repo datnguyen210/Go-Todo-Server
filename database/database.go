@@ -24,7 +24,7 @@ func DatabaseInit() {
 	if errEnv != nil {
 		log.Fatal("Error loading .env file")
 	}
-	// Capture connection properties.
+
 	cfg := mysql.Config{
 		User:   os.Getenv("DBUSER"),
 		Passwd: os.Getenv("DBPASS"),
@@ -32,7 +32,7 @@ func DatabaseInit() {
 		Addr:   "127.0.0.1:3306",
 		DBName: "todos",
 	}
-	// Get a database handle.
+
 	var err error
 	db, err = sql.Open("mysql", cfg.FormatDSN())
 	if err != nil {
@@ -46,16 +46,14 @@ func DatabaseInit() {
 	fmt.Println("Connected!")
 }
 
-func GetAllTodos() ([]Todo, error) {
-	// A todo slice to hold data from returned rows.
+func IndexTodos() ([]Todo, error) {
 	var todos []Todo
 
 	rows, err := db.Query("SELECT * FROM todo")
 	if err != nil {
-		return nil, fmt.Errorf("GetAllTodos %q: %v", err)
+		return nil, fmt.Errorf("GetAllTodos%v", err)
 	}
 	defer rows.Close()
-	// Loop through rows, using Scan to assign column data to struct fields.
 	for rows.Next() {
 		var todo Todo
 		if err := rows.Scan(&todo.ID, &todo.Title, &todo.Description, &todo.Priority); err != nil {
@@ -69,14 +67,13 @@ func GetAllTodos() ([]Todo, error) {
 	return todos, nil
 }
 
-func GetTodoById(id int64) (Todo, error) {
-	// A todo to hold returned data
+func ReadTodo(id int64) (Todo, error) {
 	var todo Todo
 
 	row := db.QueryRow("SELECT * FROM todo WHERE id = ?", id)
 	if err := row.Scan(&todo.ID, &todo.Title, &todo.Description, &todo.Priority); err != nil {
 		if err == sql.ErrNoRows {
-			return todo, fmt.Errorf("No data found with id %d", id)
+			return todo, fmt.Errorf("no data found with id %d", id)
 		}
 		return todo, fmt.Errorf("TodoById %d : %v", id, err)
 	}
