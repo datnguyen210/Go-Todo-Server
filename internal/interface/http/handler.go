@@ -10,6 +10,8 @@ import (
 	"datnguyen/todo/internal/usecase"
 )
 
+const errInvalidTodoID = "Invalid todo ID"
+
 type TodoHandler struct {
 	UseCase *usecase.TodoUseCase
 }
@@ -30,7 +32,7 @@ func (h *TodoHandler) IndexTodos(c *gin.Context) {
 func (h *TodoHandler) ReadTodoByID(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid todo ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errInvalidTodoID})
 		return
 	}
 
@@ -58,7 +60,7 @@ func (h *TodoHandler) CreateTodo(c *gin.Context) {
 func (h *TodoHandler) UpdateTodo(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid todo ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errInvalidTodoID})
 		return
 	}
 
@@ -80,7 +82,7 @@ func (h *TodoHandler) UpdateTodo(c *gin.Context) {
 func (h *TodoHandler) DeleteTodoByID(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 10, 64)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid todo ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": errInvalidTodoID})
 		return
 	}
 

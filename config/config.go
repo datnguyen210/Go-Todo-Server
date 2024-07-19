@@ -16,7 +16,6 @@ type Config struct {
 	ServerPort string
 }
 
-// LoadConfig reads the configuration from environment variables or `.env` file.
 func LoadConfig() *Config {
 	err := godotenv.Load()
 	if err != nil {
@@ -35,7 +34,6 @@ func LoadConfig() *Config {
 	return config
 }
 
-// getEnv reads an environment variable or returns a default value if not set.
 func getEnv(key, defaultValue string) string {
 	value, exists := os.LookupEnv(key)
 	if !exists {

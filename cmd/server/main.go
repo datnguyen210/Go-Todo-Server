@@ -11,6 +11,7 @@ import (
 	"datnguyen/todo/internal/interface/repository"
 	"datnguyen/todo/internal/usecase"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,6 +36,8 @@ func main() {
 
 	// Create a new router
 	router := gin.Default()
+
+	router.Use(cors.Default())
 
 	// Define routes
 	router.GET("/todos", todoHandler.IndexTodos)
