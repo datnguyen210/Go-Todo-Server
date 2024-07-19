@@ -4,12 +4,14 @@ import (
 	"datnguyen/todo/internal/entity"
 )
 
+type Todo = entity.Todo
+
 // TodoRepository defines the interface for interacting with the Todo data source.
 type TodoRepository interface {
-	IndexTodos() ([]entity.Todo, error)
-	ReadTodoByID(id int64) (entity.Todo, error)
-	CreateTodo(todo entity.Todo) (entity.Todo, error)
-	UpdateTodo(todo entity.Todo) (entity.Todo, error)
+	IndexTodos() ([]Todo, error)
+	ReadTodoByID(id int64) (Todo, error)
+	CreateTodo(todo Todo) (Todo, error)
+	UpdateTodo(todo Todo) (Todo, error)
 	DeleteTodoByID(id int64) error
 }
 
@@ -24,25 +26,25 @@ func NewTodoUseCase(todoRepo TodoRepository) *TodoUseCase {
 }
 
 // GetAllTodos retrieves all todos.
-func (uc *TodoUseCase) GetAllTodos() ([]entity.Todo, error) {
+func (uc *TodoUseCase) GetAllTodos() ([]Todo, error) {
 	return uc.TodoRepo.IndexTodos()
 }
 
 // GetTodoByID retrieves a todo by its ID.
-func (uc *TodoUseCase) GetTodoByID(id int64) (entity.Todo, error) {
+func (uc *TodoUseCase) GetTodoByID(id int64) (Todo, error) {
 	return uc.TodoRepo.ReadTodoByID(id)
 }
 
 // CreateTodo creates a new todo.
-func (uc *TodoUseCase) CreateTodo(todo entity.Todo) (entity.Todo, error) {
+func (uc *TodoUseCase) CreateTodo(todo Todo) (Todo, error) {
 	return uc.TodoRepo.CreateTodo(todo)
 }
 
 // UpdateTodo updates an existing todo.
-func (uc *TodoUseCase) UpdateTodo(id int64, updatedTodo entity.Todo) (entity.Todo, error) {
+func (uc *TodoUseCase) UpdateTodo(id int64, updatedTodo Todo) (Todo, error) {
 	todo, err := uc.TodoRepo.ReadTodoByID(id)
 	if err != nil {
-		return entity.Todo{}, err
+		return Todo{}, err
 	}
 
 	if updatedTodo.Title != "" {
